@@ -35,7 +35,7 @@
 
 using namespace std;
 
-template<class Arch, int Epochs = 1000, int BatchSize = 16*1024, int SamplesPerEpoch = 100000000>
+template<class Arch, int Epochs = 1000, int BatchSize = 16384 / 4, int SamplesPerEpoch = /*100000000*/38097668>
 class Trainer {
     static constexpr int MaxInputs       = 32;
     static constexpr int BatchesPerEpoch = SamplesPerEpoch / BatchSize;
@@ -65,8 +65,6 @@ class Trainer {
 
         target_mask.mallocCpu();
         target_mask.mallocGpu();
-
-        quantitize_shallow("C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/nn_output/weights.nnue", *network);
     }
 
     void fit(vector<string> files, vector<string> validation_files, string output) {

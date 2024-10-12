@@ -104,7 +104,7 @@ class Astra {
 //        in3.clear();
 //        output_mask.clear<HOST>();
 
-#pragma omp parallel for schedule(static) num_threads(16)
+#pragma omp parallel for schedule(static) num_threads(8)
         for (int i = 0; i < positions.positions.size(); i++)
             assign_input(positions.positions[i], in1, in2, output, output_mask, i);
 

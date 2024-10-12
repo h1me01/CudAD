@@ -28,8 +28,10 @@
 
 #include <iostream>
 #include <vector>
+#include <filesystem> 
 
 using namespace std;
+namespace fs = std::filesystem;
 
 vector<string> loadCsv(const std::string& filename) {
     vector<std::string> fenEvalPairs;
@@ -37,7 +39,7 @@ vector<string> loadCsv(const std::string& filename) {
 
     if (!file.is_open()) {
         cerr << "Error opening file: " << filename << endl;
-        return fenEvalPairs; // Return empty vector on failure
+        return fenEvalPairs; 
     }
 
     string line;
@@ -58,40 +60,60 @@ int main() {
     init();
     
     /*
+    const string output_folder = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/bin/";
+    
+    // validation data
     const string val_data_path = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/val_data/chess_val_data1_d9.csv";
 
     vector<string> val_data = loadCsv(val_data_path);
+    cout << "Loaded " << val_data.size() << " val positions" << std::endl;
 
-    cout << "Loaded " << val_data.size() << " positions" << std::endl;
-
-    vector<Position> positions;
+    vector<Position> val_positions;
     for (const string& s : val_data) {
-        positions.push_back(parseFen(s));
-        if(positions.size() == 1000) break;
+        val_positions.push_back(parseFen(s));
     }
 
-    DataSet dataset;
+    DataSet val_dataset;
+    val_dataset.positions = val_positions;
 
-    dataset.positions = positions;
+    write(output_folder + "val_data.bin", val_dataset, val_dataset.positions.size());
 
-    string test = "C:/Users/semio/Downloads/test.bin";
+    // training data
+    const string training_data_folder  = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/training_data/";
 
-    write(test, dataset, dataset.positions.size());
+    int index = 1;
+    for (const auto& entry : fs::directory_iterator(training_data_folder)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".csv") {
+            string filePath = entry.path().string();
+            vector<string> training_data = loadCsv(filePath);
+            cout << "Loaded " << training_data.size() << " training positions from " << filePath << endl;
+
+            vector<Position> training_positions;
+            for (const string& s : training_data) {
+                training_positions.push_back(parseFen(s));
+            }
+
+            DataSet training_dataset;
+            training_dataset.positions = training_positions;
+
+            write(output_folder + to_string(index) + ".bin", training_dataset, training_dataset.positions.size());
+            index++;
+        }
+    }
+
     return 0;
     */
 
-    string test = "C:/Users/semio/Downloads/test.bin";
-
-    const string data_path = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/training_data/";
+    const string data_path = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/bin/";
     const string output    = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/nn_output/";
     
-    vector<string> files {test};
-    //for (int i = 1; i <= 200; i++) {
-      //  files.push_back(data_path + to_string(i) + ".bin");
-    //}
+    vector<string> files {};
+    for (int i = 1; i <= 1; i++) {
+        files.push_back(data_path + to_string(i) + ".bin");
+    }
 
     Trainer<Astra> trainer {};
-    trainer.fit(files, vector<string> {test}, output);
+    trainer.fit(files, vector<string> {data_path + "val_data.bin"}, output);
 
     close();
 }
