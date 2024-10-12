@@ -189,7 +189,8 @@ inline Position parseFen(const std::string& fen) {
 
     auto cp_pos = fen.find_first_of(' ', character_index);
     if (cp_pos == std::string::npos) {
-        std::cout << "error parsing fen" << std::endl;
+        std::cout << "Using fen to test network" << std::endl;
+        return position;
     }
 
     auto cp = std::stof(fen.substr(cp_pos));

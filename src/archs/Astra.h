@@ -84,7 +84,10 @@ class Astra {
 
         a2->f.scalar = 1.83804 / 400.0;
 
-        return {{i1, i2}, {h1, h2, m1, a1, h3, a2}};
+        return {
+            {i1, i2}, 
+            {h1, h2, m1, a1, h3, a2}
+        };
     }
 
     static void assign_inputs_batch(DataSet&       positions,

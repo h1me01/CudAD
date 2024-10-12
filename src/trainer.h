@@ -107,7 +107,7 @@ class Trainer {
 
             if (epoch % 5 == 0) {
                 //quantitize_shallow(output + "nn-e" + std::to_string(epoch) + ".nnue", *network);
-                network->saveWeights(output + "weights-e" + std::to_string(epoch) + ".nnue");
+                network->saveWeights(output + "weights-epoch" + std::to_string(epoch) + ".nnue");
             }
 
             if (epoch % optim->schedule.step == 0)

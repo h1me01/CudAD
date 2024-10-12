@@ -116,29 +116,23 @@ void quantitize_shallow(const std::string& path,
                         Network&           network,
                         float              scalar_1 = 16,
                         float              scalar_2 = 512) {
-    FILE* f = fopen(path.c_str(), "wb");
+    FILE* f          = fopen(path.c_str(), "wb");
 
-    return;
+    auto  l0         = network.getLayers()[0];
+    auto  l0_params  = l0->getTunableParameters();
+    auto  l0_weights = l0_params[0]->values;
+    auto  l0_biases  = l0_params[1]->values;
 
-    auto l0 = network.getLayers()[0];
-    auto l0_params = l0->getTunableParameters();
-
-    auto l0_weights = l0_params[0]->values;
-    auto l0_biases = l0_params[1]->values;
-
-    l0_weights.gpuDownload();
-    l0_biases.gpuDownload();
+    l0_weights.gpuDownload(), l0_biases.gpuDownload();
     writeMatrix<int16_t>(f, l0_weights, scalar_1, true);
     writeMatrix<int16_t>(f, l0_biases, scalar_1);
 
-    auto l1 = network.getLayers()[1];
-    auto l1_params = l1->getTunableParameters();
-
+    auto l1         = network.getLayers()[4];
+    auto l1_params  = l1->getTunableParameters();
     auto l1_weights = l1_params[0]->values;
-    auto l1_biases = l1_params[1]->values;
+    auto l1_biases  = l1_params[1]->values;
 
-    l1_weights.gpuDownload();
-    l1_biases.gpuDownload();
+    l1_weights.gpuDownload(), l1_biases.gpuDownload();
     writeMatrix<int16_t>(f, l1_weights, scalar_2);
     writeMatrix<int32_t>(f, l1_biases, scalar_1 * scalar_2);
 

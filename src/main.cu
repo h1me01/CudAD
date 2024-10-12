@@ -106,7 +106,7 @@ int main() {
 
     const string data_path = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/bin/";
     const string output    = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/nn_output/";
-    
+    /*
     vector<string> files {};
     for (int i = 1; i <= 1; i++) {
         files.push_back(data_path + to_string(i) + ".bin");
@@ -114,6 +114,18 @@ int main() {
 
     Trainer<Astra> trainer {};
     trainer.fit(files, vector<string> {data_path + "val_data.bin"}, output);
+*/
+    auto layers = Astra::get_layers();
+    Network network{std::get<0>(layers),std::get<1>(layers)};
+    network.setLossFunction(Astra::get_loss_function());
+    network.loadWeights(output + "weights-epoch20.nnue");
+
+    test_fen<Astra>(network, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    test_fen<Astra>(network, "8/8/6R1/5k1P/6p1/4K3/8/8 b - - 1 53");
+
+    quantitize_shallow(output + "nn-768-2x256-1.nnue", network);
+
+    std::cout << "end" << std::endl;
 
     close();
 }
