@@ -35,7 +35,7 @@
 
 using namespace std;
 
-template<class Arch, int Epochs = 1000, int BatchSize = 16384, int SamplesPerEpoch = 100000000>
+template<class Arch, int Epochs = 1000, int BatchSize = 16*1024, int SamplesPerEpoch = 100000000>
 class Trainer {
     static constexpr int MaxInputs       = 32;
     static constexpr int BatchesPerEpoch = SamplesPerEpoch / BatchSize;
@@ -65,6 +65,8 @@ class Trainer {
 
         target_mask.mallocCpu();
         target_mask.mallocGpu();
+
+        quantitize_shallow("C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/nn_output/weights.nnue", *network);
     }
 
     void fit(vector<string> files, vector<string> validation_files, string output) {
@@ -105,9 +107,9 @@ class Trainer {
                        std::to_string(epoch_loss / BatchesPerEpoch),
                        std::to_string(validation_loss)});
 
-            if (epoch % 10 == 0) {
-//                quantitize_shallow(output + "nn-epoch" + std::to_string(epoch) + ".nnue", *network);
-                network->saveWeights(output + "weights-epoch" + std::to_string(epoch) + ".nnue");
+            if (epoch % 5 == 0) {
+                //quantitize_shallow(output + "nn-e" + std::to_string(epoch) + ".nnue", *network);
+                network->saveWeights(output + "weights-e" + std::to_string(epoch) + ".nnue");
             }
 
             if (epoch % optim->schedule.step == 0)
@@ -116,8 +118,6 @@ class Trainer {
     }
 
     float train(int epoch, Timer* timer, BatchLoader* batch_loader) {
-
-
         float     epoch_loss    = 0.0;
         long long prev_duration = 0;
 

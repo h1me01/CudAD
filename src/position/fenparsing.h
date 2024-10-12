@@ -28,6 +28,7 @@
 #include <cstring>
 #include <sstream>
 #include <string>
+#include <iostream>
 
 struct FenCharacter {
     char   character {0};
@@ -144,7 +145,7 @@ inline Position parseFen(const std::string& fen) {
         Rank file = fen_character_lookup[fen[character_index++]].rank;
         Rank rank = fen_character_lookup[fen[character_index]].file;
         position.m_meta.setEnPassantSquare(squareIndex(rank, file));
-    }
+    } 
     character_index += 2;
 
     // -----------------------------------------------------------------------------------------------
@@ -172,21 +173,51 @@ inline Position parseFen(const std::string& fen) {
     // -----------------------------------------------------------------------------------------------
     // read wdl and cp values
     // -----------------------------------------------------------------------------------------------
+    /*
     auto left_bracket_pos  = fen.find_first_of('[', character_index);
     auto right_bracket_pos = fen.find_first_of(']', character_index);
 
     if (left_bracket_pos == std::string::npos || right_bracket_pos == std::string::npos) {
-        return position;
+        std::cout << "error parsing fen" << std::endl;
+        exit(1);
     }
 
     auto    wdl             = std::stof(fen.substr(left_bracket_pos + 1, right_bracket_pos));
-    auto    cp              = std::stof(fen.substr(right_bracket_pos + 1, fen.size()));
-
     int8_t  wdl_int         = std::round(wdl * 2 - 1);
-    int16_t cp_int          = std::round(cp);
+    */
 
+
+    auto cp_pos = fen.find_first_of(' ', character_index);
+    if (cp_pos == std::string::npos) {
+        std::cout << "error parsing fen" << std::endl;
+    }
+
+    auto cp = std::stof(fen.substr(cp_pos));
+    int16_t cp_int = std::round(cp);
+
+    /*
+    std::cout << fen << std::endl;
+    std::cout << "score: " <<cp_int << std::endl;
+
+    std::cout << "\npieces" << std::endl;
+    std::cout << position.m_pieces;
+    
+    std::cout << "\noccupancy" << std::endl;
+    printBitboard(position.m_occupancy);
+
+    std::cout << "\nmeta info" << std::endl;
+    std::cout << "active player: " << position.m_meta.getActivePlayer() << std::endl;
+    std::cout << "en passant square: " << position.m_meta.getEnPassantSquare() << std::endl;
+    std::cout << "castling rights: " << 
+            (int) position.m_meta.getCastlingRight(WHITE, QUEEN_SIDE) << 
+            (int) position.m_meta.getCastlingRight(WHITE, KING_SIDE) << 
+            (int) position.m_meta.getCastlingRight(BLACK, QUEEN_SIDE) << 
+            (int) position.m_meta.getCastlingRight(BLACK, KING_SIDE) << std::endl;
+    std::cout << "fifty move rule: " << (int) position.m_meta.getFiftyMoveRule() << std::endl;
+    std::cout << "move count: " << (int) position.m_meta.getMoveCount() << std::endl;
+    */
     position.m_result.score = cp_int;
-    position.m_result.wdl   = wdl_int;
+    //position.m_result.wdl   = wdl_int;
 
     return position;
 }

@@ -52,6 +52,7 @@ class Network {
             layers[i]->backprop();
         }
     }
+    
     void batch(DenseMatrix& target, SArray<bool>& target_mask) {
         ASSERT(target.isAllocated<DEVICE>());
         ASSERT(target_mask.isAllocated<DEVICE>());
@@ -83,7 +84,8 @@ class Network {
             }
         }
         fclose(f);
-    };
+    }
+
     void saveWeights(const std::string& file) {
         FILE* f = fopen(file.c_str(), "wb");
 
