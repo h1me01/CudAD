@@ -49,7 +49,7 @@ class Astra {
 
     static Optimiser*      get_optimiser() {
         Adam* optim  = new Adam();
-        optim->lr    = 1e-2;
+        optim->lr    = 1e-1;
         optim->beta1 = 0.95;
         optim->beta2 = 0.999;
 
