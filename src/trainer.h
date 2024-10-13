@@ -106,7 +106,7 @@ class Trainer {
                        std::to_string(validation_loss)});
 
             if (epoch % 5 == 0) {
-                //quantitize_shallow(output + "nn-e" + std::to_string(epoch) + ".nnue", *network);
+                //quantitize_shallow(output + "nn-epoch" + std::to_string(epoch) + ".nnue", *network);
                 network->saveWeights(output + "weights-epoch" + std::to_string(epoch) + ".nnue");
             }
 

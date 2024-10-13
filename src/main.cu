@@ -117,15 +117,12 @@ int main() {
 */
     auto layers = Astra::get_layers();
     Network network{std::get<0>(layers),std::get<1>(layers)};
-    network.setLossFunction(Astra::get_loss_function());
-    network.loadWeights(output + "weights-epoch20.nnue");
+    network.loadWeights(output + "weights-epoch15.nnue");
+    network.customSaveWeights(output + "weights-epoch15_.nnue");
 
     test_fen<Astra>(network, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     test_fen<Astra>(network, "8/8/6R1/5k1P/6p1/4K3/8/8 b - - 1 53");
 
-    quantitize_shallow(output + "nn-768-2x256-1.nnue", network);
-
     std::cout << "end" << std::endl;
-
     close();
 }

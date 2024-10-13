@@ -139,9 +139,17 @@ class Astra {
             Piece  pc      = p.m_pieces.getPiece(idx);
 
             auto   view    = p.m_meta.getActivePlayer();
-            auto   inp_idx = index(sq, pc, 0, view);
 
-            in1.set(id, inp_idx);
+            auto   inp_white_pov = index(sq, pc, 0, WHITE);
+            auto   inp_black_pov = index(sq, pc, 0, BLACK);
+
+            if (view == WHITE) {
+                in1.set(id, inp_white_pov);
+                in2.set(id, inp_black_pov);
+            } else {
+                in2.set(id, inp_white_pov);
+                in1.set(id, inp_black_pov);
+            }
 
             bb = lsbReset(bb);
             idx++;

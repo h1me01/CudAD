@@ -127,7 +127,7 @@ void quantitize_shallow(const std::string& path,
     writeMatrix<int16_t>(f, l0_weights, scalar_1, true);
     writeMatrix<int16_t>(f, l0_biases, scalar_1);
 
-    auto l1         = network.getLayers()[4];
+    auto l1         = network.getLayers()[1];
     auto l1_params  = l1->getTunableParameters();
     auto l1_weights = l1_params[0]->values;
     auto l1_biases  = l1_params[1]->values;
