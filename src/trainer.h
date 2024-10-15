@@ -35,7 +35,7 @@
 
 using namespace std;
 
-template<class Arch, int Epochs = 1000, int BatchSize = 16384 / 4, int SamplesPerEpoch = /*100000000*/38097668>
+template<class Arch, int Epochs = 1000, int BatchSize = 16384, int SamplesPerEpoch = 100000000>
 class Trainer {
     static constexpr int MaxInputs       = 32;
     static constexpr int BatchesPerEpoch = SamplesPerEpoch / BatchSize;

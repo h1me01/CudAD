@@ -45,7 +45,7 @@ vector<string> loadCsv(const std::string& filename) {
     string line;
     while (getline(file, line)) {
         istringstream ss(line);
-        string fen, eval;
+        string fen, eval, wdl;
 
         if (getline(ss, fen, ',') && getline(ss, eval)) {
             fenEvalPairs.push_back(fen + " " + eval);
@@ -86,7 +86,7 @@ int main() {
         if (entry.is_regular_file() && entry.path().extension() == ".csv") {
             string filePath = entry.path().string();
             vector<string> training_data = loadCsv(filePath);
-            cout << "Loaded " << training_data.size() << " training positions from " << filePath << endl;
+            cout << "Loaded " << training_data.size() << " training positions" << endl;
 
             vector<Position> training_positions;
             for (const string& s : training_data) {
@@ -100,23 +100,20 @@ int main() {
             index++;
         }
     }
-
     return 0;
     */
-    
+        
     const string data_path = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/bin/";
     const string output    = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/nn_output/";
     
-    /*
     vector<string> files {};
     for (int i = 1; i <= 1; i++) {
         files.push_back(data_path + to_string(i) + ".bin");
     }
-
-    Trainer<Astra> trainer {};
-    trainer.fit(files, vector<string> {data_path + "val_data.bin"}, output);
-    */
-
+    
+    Trainer<Astra, 1000, 4096> trainer {};
+    //trainer.fit(files, vector<string> {data_path + "val_data.bin"}, output);
+        
     auto layers = Astra::get_layers();
     Network network{std::get<0>(layers),std::get<1>(layers)};
     network.loadWeights(output + "weights-epoch65.nnue");

@@ -30,6 +30,8 @@
 #include <string>
 #include <iostream>
 
+#include "wdl_model.h"
+
 struct FenCharacter {
     char   character {0};
     Square skip_squares {0};
@@ -173,20 +175,6 @@ inline Position parseFen(const std::string& fen) {
     // -----------------------------------------------------------------------------------------------
     // read wdl and cp values
     // -----------------------------------------------------------------------------------------------
-    /*
-    auto left_bracket_pos  = fen.find_first_of('[', character_index);
-    auto right_bracket_pos = fen.find_first_of(']', character_index);
-
-    if (left_bracket_pos == std::string::npos || right_bracket_pos == std::string::npos) {
-        std::cout << "error parsing fen" << std::endl;
-        exit(1);
-    }
-
-    auto    wdl             = std::stof(fen.substr(left_bracket_pos + 1, right_bracket_pos));
-    int8_t  wdl_int         = std::round(wdl * 2 - 1);
-    */
-
-
     auto cp_pos = fen.find_first_of(' ', character_index);
     if (cp_pos == std::string::npos) {
         std::cout << "Using fen to test network" << std::endl;
@@ -195,30 +183,10 @@ inline Position parseFen(const std::string& fen) {
 
     auto cp = std::stof(fen.substr(cp_pos));
     int16_t cp_int = std::round(cp);
+    int8_t wdl_int = getWdl(cp, position);
 
-    /*
-    std::cout << fen << std::endl;
-    std::cout << "score: " <<cp_int << std::endl;
-
-    std::cout << "\npieces" << std::endl;
-    std::cout << position.m_pieces;
-    
-    std::cout << "\noccupancy" << std::endl;
-    printBitboard(position.m_occupancy);
-
-    std::cout << "\nmeta info" << std::endl;
-    std::cout << "active player: " << position.m_meta.getActivePlayer() << std::endl;
-    std::cout << "en passant square: " << position.m_meta.getEnPassantSquare() << std::endl;
-    std::cout << "castling rights: " << 
-            (int) position.m_meta.getCastlingRight(WHITE, QUEEN_SIDE) << 
-            (int) position.m_meta.getCastlingRight(WHITE, KING_SIDE) << 
-            (int) position.m_meta.getCastlingRight(BLACK, QUEEN_SIDE) << 
-            (int) position.m_meta.getCastlingRight(BLACK, KING_SIDE) << std::endl;
-    std::cout << "fifty move rule: " << (int) position.m_meta.getFiftyMoveRule() << std::endl;
-    std::cout << "move count: " << (int) position.m_meta.getMoveCount() << std::endl;
-    */
     position.m_result.score = cp_int;
-    //position.m_result.wdl   = wdl_int;
+    position.m_result.wdl   = wdl_int;
 
     return position;
 }

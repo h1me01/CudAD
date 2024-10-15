@@ -53,9 +53,6 @@ class Astra {
         optim->beta1 = 0.95;
         optim->beta2 = 0.999;
 
-        optim->schedule.gamma = 0.3;
-        optim->schedule.step  = 100;
-
         return optim;
     }
 
@@ -156,16 +153,16 @@ class Astra {
         }
 
         float p_value = p.m_result.score;
-        //float w_value = p.m_result.wdl;
+        float w_value = p.m_result.wdl;
 
         // flip if black is to move -> relative network style
         if (p.m_meta.getActivePlayer() == BLACK) {
             p_value = -p_value;
-          //  w_value = -w_value;
+            w_value = -w_value;
         }
 
         float p_target = 1 / (1 + expf(-p_value * SigmoidScalar));
-        //float w_target = (w_value + 1) / 2.0f;
+        float w_target = (w_value + 1) / 2.0f;
 
         //    int   output_bucket = (bitCount(p.m_occupancy) - 1) / 4;
 
