@@ -25,6 +25,7 @@
 #include "dataset/dataset.h"
 #include "dataset/writer.h"
 #include "position/fenparsing.h"
+#include "dataset/shuffle.h"
 
 #include <iostream>
 #include <vector>
@@ -59,11 +60,11 @@ vector<string> loadCsv(const std::string& filename) {
 int main() {
     init();
     
+    const string data_path = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/bin/";
+    const string output    = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/nn_output/";
     /*
-    const string output_folder = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/bin/";
-    
     // validation data
-    const string val_data_path = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/val_data/chess_val_data1_d9.csv";
+    const string val_data_path = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/val_data/chess_val_data.csv";
 
     vector<string> val_data = loadCsv(val_data_path);
     cout << "Loaded " << val_data.size() << " val positions" << std::endl;
@@ -76,11 +77,12 @@ int main() {
     DataSet val_dataset;
     val_dataset.positions = val_positions;
 
-    write(output_folder + "val_data.bin", val_dataset, val_dataset.positions.size());
+    write(data_path + "val_data.bin", val_dataset, val_dataset.positions.size());
 
     // training data
     const string training_data_folder  = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/training_data/";
 
+    vector<string> training_files {};
     int index = 1;
     for (const auto& entry : fs::directory_iterator(training_data_folder)) {
         if (entry.is_regular_file() && entry.path().extension() == ".csv") {
@@ -96,28 +98,31 @@ int main() {
             DataSet training_dataset;
             training_dataset.positions = training_positions;
 
-            write(output_folder + to_string(index) + ".bin", training_dataset, training_dataset.positions.size());
+            string file_path = data_path + "data_" + to_string(index) + ".bin";
+            write(file_path, training_dataset, training_dataset.positions.size());
+            training_files.push_back(file_path);
             index++;
+            break;
         }
     }
+
+    mix_and_shuffle(training_files, data_path);
+
     return 0;
     */
-        
-    const string data_path = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/bin/";
-    const string output    = "C:/Users/semio/Documents/programming/Astra-Chess-Engine/Astra-Data/nn_output/";
-    
+            
     vector<string> files {};
-    for (int i = 1; i <= 1; i++) {
+    for (int i = 1; i <= 10; i++) {
         files.push_back(data_path + to_string(i) + ".bin");
     }
-    
+
     Trainer<Astra, 1000, 4096> trainer {};
     //trainer.fit(files, vector<string> {data_path + "val_data.bin"}, output);
         
     auto layers = Astra::get_layers();
     Network network{std::get<0>(layers),std::get<1>(layers)};
-    network.loadWeights(output + "weights-epoch65.nnue");
-    network.customSaveWeights(output + "cweights-epoch65.nnue");
+    network.loadWeights(output + "weights-epoch60.nnue");
+    network.customSaveWeights(output + "cweights-epoch60.nnue");
 
     test_fen<Astra>(network, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     test_fen<Astra>(network, "8/8/6R1/5k1P/6p1/4K3/8/8 b - - 1 53");
