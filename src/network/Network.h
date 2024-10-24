@@ -86,25 +86,6 @@ class Network {
         fclose(f);
     }
 
-    void customSaveWeights(const std::string& file) {
-        FILE* f = fopen(file.c_str(), "wb");
-
-        for (LayerInterface* l : layers) {
-            for (Tape* t : l->getTunableParameters()) {
-                t->values.gpuDownload();
-
-                for (int p_i = 0; p_i < t->values.m; p_i++) {
-                    for (int p_n = 0; p_n < t->values.n; p_n++) {
-                        float value = (float)t->values(p_i, p_n); 
-                        fwrite(&value, sizeof(float), 1, f);
-                    }
-                }
-            }
-        }
-
-        fclose(f);
-    }
-
     void saveWeights(const std::string& file) {
         FILE* f = fopen(file.c_str(), "wb");
 

@@ -121,8 +121,9 @@ int main() {
         
     auto layers = Astra::get_layers();
     Network network{std::get<0>(layers),std::get<1>(layers)};
-    network.loadWeights(output + "weights-epoch60.nnue");
-    network.customSaveWeights(output + "cweights-epoch60.nnue");
+    network.loadWeights(output + "main_weights/weights-epoch60_256.nnue");
+
+    network.saveWeights(output + "weights-epoch60_256.nnue");
 
     test_fen<Astra>(network, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     test_fen<Astra>(network, "8/8/6R1/5k1P/6p1/4K3/8/8 b - - 1 53");
